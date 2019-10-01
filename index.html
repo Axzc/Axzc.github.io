@@ -148,6 +148,112 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-将ubuntu上的Shadowsocks代理分享给其他设备" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/20/将ubuntu上的Shadowsocks代理分享给其他设备/">将ubuntu上的Shadowsocks代理分享给其他设备</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/20/将ubuntu上的Shadowsocks代理分享给其他设备/" class="archive-article-date">
+  	<time datetime="2019-08-20T08:50:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>系统环境:ubuntu 18.04<br>这个方法可以将同一局域网中的多个设备共享其中一台已经安装 shadowsocks 的电脑,不用在每个设备中 都安装 shadowsocks,缺点是需要手动填写被共享设备的局部代理的具体要求…</p>
+<h3 id="安装-shadowsocks"><a href="#安装-shadowsocks" class="headerlink" title="安装 shadowsocks"></a>安装 shadowsocks</h3><p>首先更新软件源<br><code>sudo apt-get update</code><br>安装 pip (如果已经安装可以略过)<br><code>sudo apt-get install python-pip</code><br>安装 shadowsocks<br><code>sudo pip install shadowsocks</code></p>
+<h3 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h3><p><code>sudo vim /etc/shadowsocks.json</code><br>添加以下几行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;: &quot;你的服务器ip&quot;,</span><br><span class="line">    &quot;server_port&quot;: 你的服务器端口,</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;local_port&quot;: 1080,</span><br><span class="line">    &quot;password&quot;: &quot;密码&quot;,</span><br><span class="line">    &quot;method&quot;: &quot;aes-256-cfb&quot;,  //加密方式</span><br><span class="line">    &quot;fast_open&quot;: true,</span><br><span class="line">    &quot;timeout&quot;:300</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动-shadowsocks"><a href="#启动-shadowsocks" class="headerlink" title="启动 shadowsocks"></a>启动 shadowsocks</h3><p><code>sudo sslocal -c /etc/shadowsocks.json -d -start</code><br>这里可能会报错<br><code>EVP_CIPHER_CTX was made opaque in OpenSSL 1.1.0. As a result, EVP_CIPHER_CTX_reset() appeared and EVP_CIPHER_CTX_cleanup() disappeared.</code></p>
+<p>####解决办法:<br>使用vim 打开文件<br><code>vim /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py</code><br>(这里的根据自己情况修改)<br>然后替换、保存<br><code>:%s/cleanup/reset/</code><br><code>:x</code><br>再次执行<br><code>sudo sslocal -c /etc/shadowsocks.json -d -start</code><br>这样shadowsocks就安装配置完成 接下来</p>
+<h3 id="安装配置-Privoxy"><a href="#安装配置-Privoxy" class="headerlink" title="安装配置 Privoxy"></a>安装配置 Privoxy</h3><p><code>sudo apt-get install privoxy</code></p>
+<h3 id="配置-Privoxy"><a href="#配置-Privoxy" class="headerlink" title="配置 Privoxy"></a>配置 Privoxy</h3><p><code>sudo vim /etc/privoxy/config</code></p>
+<ul>
+<li>打开文件搜索 listen-address</li>
+<li>找到 # listen-address 127.0.0.1:8118 取消注释</li>
+<li>把 127.0.0.1改为 0.0.0.0 端口号改成一个 未占用的端口</li>
+<li>搜索 forward-socks5t</li>
+<li>将端口改为 shadowsocks 的端口</li>
+<li>找到 # forward-socks5t / 127.0.0.1:9050</li>
+<li>去掉注释 将端口 改为 shadowsocks 的端口 (就是 shadowsocks.json文件中的 local_port)<h3 id="设置局部代理"><a href="#设置局部代理" class="headerlink" title="设置局部代理"></a>设置局部代理</h3>打开 Privoxy 配置文件<br><code>sudo vim /etc/privoxy/config</code><br>直接搜索 confdir 将它的值设置为 /etc/privoxy</li>
+</ul>
+<p><strong>这个位置很关键, 如果你想把配置文件都放其它的地方，比如放到/root/privoxy下，就把它设置成confdir /root/privoxy</strong><br><strong>创建一个 pac.action  文件 添加到 confdir目录中, 并且在 config文件中 添加一行 actionsfile pac.action</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;alias&#125;&#125;</span><br><span class="line"></span><br><span class="line">direct = +forward-override&#123;forward .&#125;</span><br><span class="line"></span><br><span class="line">shadowsocks = +forward-override&#123;forward-socks5 127.0.0.1:1080 .&#125;</span><br><span class="line"># 有了这一行 就可以把 config 文件中 forward 注释掉了</span><br><span class="line"></span><br><span class="line"># default &#123;direct&#125; /</span><br><span class="line"></span><br><span class="line"># shadowsocks</span><br><span class="line"></span><br><span class="line">&#123;shadowsocks&#125;</span><br><span class="line"># 以下为你要使用代理的网址 可以自行添加</span><br><span class="line">.google.com</span><br><span class="line">.gmail.com</span><br></pre></td></tr></table></figure>
+
+<p>最后重启 Privoxy<br><code>sudo /etc/init.d/privoxy restart</code><br>*<em>最后拿出手机连接 wifi 选择手动代理 把ubuntu 电脑的ip地址和 刚刚 config文件中的listen-address的端口号填进去<br>*</em><br>大功告成!</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">privoxy</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/技术分享//" class="article-tag-list-link color5">技术分享</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/20/将ubuntu上的Shadowsocks代理分享给其他设备/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-从这里开始" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -155,13 +261,13 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/28/从这里开始/">从这里开始</a>
+      <a class="article-title" href="/2019/08/19/从这里开始/">从这里开始</a>
     </h1>
   
 
         
-        <a href="/2019/09/28/从这里开始/" class="archive-article-date">
-  	<time datetime="2019-09-28T06:34:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-28</time>
+        <a href="/2019/08/19/从这里开始/" class="archive-article-date">
+  	<time datetime="2019-08-19T06:34:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-19</time>
 </a>
         
       </header>
@@ -193,7 +299,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/28/从这里开始/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/19/从这里开始/">展开全文 >></a>
         </p>
       
 
@@ -317,6 +423,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">privoxy</a>
               </li>
             
             <div class="clearfix"></div>
