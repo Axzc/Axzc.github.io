@@ -7,7 +7,7 @@ tags: privoxy
 
 系统环境:ubuntu 18.04
 这个方法可以将同一局域网中的多个设备共享其中一台已经安装 shadowsocks 的电脑,不用在每个设备中 都安装 shadowsocks,缺点是需要手动填写被共享设备的局部代理的具体要求...
-
+<!--more-->
 ### 安装 shadowsocks
 首先更新软件源
 `sudo apt-get update`
