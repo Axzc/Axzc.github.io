@@ -1,5 +1,5 @@
 ---
-title: 关于python的垃圾回收机制
+title: 关于python的垃圾回收机制1
 date: 2019-08-29 16:59:17
 categories: 笔记
 tags: python
@@ -36,3 +36,6 @@ python 的 垃圾回收主要是已引用为主.引用计数用在记录当前�
   ```
   在python中想要查询一个对象的 引用计数值可以通过sys.getrefcount()方法查看
   需要注意的是 使用 sys.getrefcount()方法 会使引用计数值加1
+
+
+  *未完待续.......*

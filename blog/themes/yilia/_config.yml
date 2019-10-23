@@ -6,9 +6,9 @@ menu:
 
 # SubNav
 subnav:
-  github: "#"
-  weibo: "#"
-  rss: "#"
+  github: "https://github.com/Axzc"
+  weibo: "https://weibo.com/u/2703502667/home"
+  #rss: "#"
   #qq: "#"
   #weixin: "#"
   #jianshu: "#"
@@ -16,7 +16,7 @@ subnav:
   #segmentfault: "#"
   #bilibili: "#"
   #acfun: "#"
-  #mail: "mailto:litten225@qq.com"
+  mail: "mailto:meetzhicheng.xing@outlook.com"
   #facebook: "#"
   #google: "#"
   #twitter: "#"
@@ -77,7 +77,7 @@ share_jia: true
 #具体请参考wiki：https://github.com/litten/hexo-theme-yilia/wiki/
 
 #1、多说
-duoshuo: false
+duoshuo: true
 
 #2、网易云跟帖
 wangyiyun: false
@@ -99,7 +99,7 @@ gitment_oauth:
 # 样式定制 - 一般不需要修改，除非有很强的定制欲望…
 style:
   # 头像上面的背景颜色
-  header: '#4d4d4d'
+  header: '#e86e1b'
   # 右滑板块背景
   slider: 'linear-gradient(200deg,#a0cfe4,#e8c37e)'
 
@@ -126,4 +126,4 @@ friends:
   友情链接5: http://localhost:4000/
   友情链接6: http://localhost:4000/
 
-aboutme: 很惭愧<br><br>只做了一点微小的工作<br>谢谢大家
+aboutme:
