@@ -1,7 +1,8 @@
 ---
 title: 解决 ubuntu 下postman光标位置错位问题
 date: 2019-09-16 22:33:03
-tags postman:
+categories: 问题
+tags: postman
 ---
 
 系统环境: ubuntu 18.04
