@@ -15,6 +15,7 @@ so = ctypes.cdll.LoadLibrary(os.getcwd() + '/libget.so')  # 使用cdll导入 动
 ```
 so.helloworld()
 ```
+<!--more-->
 - 如何传递参数
 ctypes 作为c++ 和 python 联系的桥梁,ctypes 来衔接这两种语言
 网上有很多 ctypes类型、python类型和c类型的格式表
