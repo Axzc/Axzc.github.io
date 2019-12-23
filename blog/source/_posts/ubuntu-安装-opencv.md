@@ -51,9 +51,7 @@ sudo ldconfig  //使路径生效
 - 配置bash
 ```
 sudo vim /etc/bash.bashrc 
-```
-- 在末尾加入
-```
+// 在末尾加入
 PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig  
 export PKG_CONFIG_PATH
 // 使设置生效
