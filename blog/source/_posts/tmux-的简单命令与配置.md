@@ -1,5 +1,5 @@
 ---
-title: hexo 的简单命令与配置
+title: tmux 的简单命令与配置
 date: 2020-01-14 09:32:06
 tags: [tmux, terminal]
 categories: 笔记
